@@ -1,3 +1,4 @@
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -83,8 +84,55 @@ public class first {
 
     }
 
-    // public static void main(String[] args) {
+    // delect bipartite graph;
+    public static boolean isBipartite(int graph[][]) {
 
-    // }
+        int validPath[][] = { { 0, 1 }, { 1, 0 }, { 0, -1 }, { -1, 0 } };
+        int col[][] = new int[graph.length][graph[0].length];
+
+        for (int i = 0; i < col.length; i++) {
+            Arrays.fill(col[i], -1);
+        }
+        col[0][0] = 0;
+
+        for (int g = 0; g < graph.length; g++) {
+            for (int j = 0; j < graph[0].length; j++) {
+
+                if (col[g][j] == -1) {
+                    Queue<Info> q = new LinkedList<>();
+                    q.add(new Info(g, j, 0));
+
+                    while (!q.isEmpty()) {
+                        int size = q.size();
+                        for (int i = 0; i < size; i++) {
+                            Info curr = q.remove();
+                            int newRow = curr.row + validPath[i][0];
+                            int newCol = curr.col + validPath[i][1];
+                            if (newCol >= 0 && newRow >= 0 && newCol < graph[0].length && newRow < graph.length) {
+                                if (col[newCol][newCol] == -1) {
+                                    int newC = col[curr.row][curr.col] == 0 ? 1 : 0;
+                                    q.add(new Info(newRow, newCol, newC));
+                                } else if (col[newRow][newCol] == col[curr.row][curr.col]) {
+                                    return false;
+                                }
+                            }
+
+                        }
+
+                    }
+
+                }
+            }
+        }
+
+        return true;
+
+    }
+
+    public static void main(String[] args) {
+        System.out.println(-401 % 10);
+        System.out.println(-401 / 10);
+
+    }
 
 }
