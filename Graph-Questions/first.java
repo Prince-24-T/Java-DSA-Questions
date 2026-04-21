@@ -54,6 +54,35 @@ public class first {
 
     }
 
+    /// cycclic detection in undirected graph;
+    public static boolean isCyclic(int graph[][], boolean visited[][], int row, int col, int parRow, int parCol) {
+        if (row < 0 || col < 0 || row >= graph.length || col >= graph[0].length) {
+            return false;
+        }
+        visited[row][col] = true;
+        int validPath[][] = { { 0, 1 }, { 1, 0 }, { -1, 0 }, { 0, -1 } };
+        for (int i = 0; i < validPath.length; i++) {
+
+            int newRow = row + validPath[i][0];
+            int newCol = col + validPath[i][1];
+            int newpar = graph[row][col];
+            if (newCol >= 0 && newRow >= 0 && newCol < graph[0].length && newRow < graph.length) {
+
+                if (!visited[newRow][newCol]) {
+                    if (isCyclic(graph, visited, newRow, newCol, row, col)) {
+                        return true;
+
+                    }
+                } else if (visited[newRow][newRow] && parCol != newCol || parRow != newRow) {
+                    return true;
+                }
+            }
+
+        }
+        return false;
+
+    }
+
     // public static void main(String[] args) {
 
     // }
