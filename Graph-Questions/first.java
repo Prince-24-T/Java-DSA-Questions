@@ -129,6 +129,36 @@ public class first {
 
     }
 
+    // cyclic detction in the directed graph
+
+    public static boolean isCycle2(int graph[][], boolean visited[][], boolean path[][], int row, int col) {
+
+        visited[row][col] = true;
+        path[row][col] = true;
+
+        int validPath[][] = { { 0, 1 }, { 1, 0 }, { 0, -1 }, { -1, 0 } };
+        for (int i = 0; i < validPath.length; i++) {
+            int newRow = row + validPath[i][0];
+            int newCol = col + validPath[i][1];
+            if (newRow >= 0 && newCol >= 0 && newCol < graph[0].length && newRow < graph.length) {
+                if (!visited[newRow][newCol]) {
+                    if (isCycle2(graph, visited, path, newRow, newCol)) {
+                        return true;
+                    }
+                } else if (path[newRow][newCol]) {
+                    return true;
+                }
+
+            }
+
+        }
+
+        path[row][col] = false;
+
+        return false;
+
+    }
+
     public static void main(String[] args) {
         System.out.println(-401 % 10);
         System.out.println(-401 / 10);
