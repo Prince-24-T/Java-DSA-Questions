@@ -229,6 +229,52 @@ public class first {
 
     }
 
+    /// using bfs
+    ///
+
+    public static void topological(int graph[][], int n) {
+
+        int inDegree[] = new int[n + 1];
+
+        for (int i = 1; i < graph.length; i++) {
+            int src = graph[i][0];
+            int dest = graph[i][1];
+            inDegree[dest]++;
+        }
+
+        @SuppressWarnings("unchecked")
+        ArrayList<Info3>[] graphs = new ArrayList[n];
+
+        for (int i = 0; i < n; i++) {
+            graphs[i] = new ArrayList<>();
+        }
+
+        for (int i = 0; i < n; i++) {
+            int src = graph[i][0];
+            int dest = graph[i][1];
+
+            graphs[src].add(new Info3(src, dest));
+        }
+        Queue<Integer> q = new LinkedList<>();
+        for (int i = 0; i < inDegree.length; i++) {
+            if (inDegree[i] == 0) {
+                q.add(i);
+            }
+        }
+        while (!q.isEmpty()) {
+            int curr = q.remove();
+            for (int i = 0; i < graphs[curr].size(); i++) {
+                Info3 e = graphs[curr].get(i);
+                inDegree[e.dest] = inDegree[e.dest] - 1;
+                if (inDegree[e.dest] == 0) {
+                    q.add(e.dest);
+                }
+            }
+
+        }
+
+    }
+
     public static void main(String[] args) {
 
     }
