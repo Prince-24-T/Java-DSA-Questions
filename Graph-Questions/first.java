@@ -1,6 +1,8 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.LinkedList;
+import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Stack;
 
@@ -271,6 +273,125 @@ public class first {
                 }
             }
 
+        }
+
+    }
+
+    /// Dijkastra Algo
+    class Pair implements Comparable<Pair> {
+        int src;
+        int weight;
+
+        public int compareTo(Pair p2) {
+            return this.weight - p2.weight;
+        }
+
+        public Pair(int src, int weight) {
+            this.src = src;
+            this.weight = weight;
+        }
+
+    }
+
+    class Info4 {
+        int src;
+        int dest;
+        int weight;
+
+        public Info4(int src, int dest, int weight) {
+            this.src = src;
+            this.weight = weight;
+            this.dest = dest;
+        }
+    }
+
+    public void dijKastraAlgo(int graph[][], int s, int n) {
+        boolean vis[] = new boolean[n + 1];
+
+        PriorityQueue<Pair> pq = new PriorityQueue<>();
+        int path[] = new int[n + 1];
+        for (int i = 0; i < n + 1; i++) {
+            if (i != s) {
+                path[i] = Integer.MAX_VALUE;
+            }
+        }
+        @SuppressWarnings("unchecked")
+        ArrayList<Info4>[] graphs = new ArrayList[n + 1];
+
+        for (int i = 0; i < n; i++) {
+            graphs[i] = new ArrayList<>();
+        }
+
+        for (int i = 0; i < n; i++) {
+            int src = graph[i][0];
+            int dest = graph[i][1];
+            int weight = graph[i][2];
+
+            graphs[src].add(new Info4(src, dest, weight));
+        }
+
+        pq.add(new Pair(s, 0));
+        while (!pq.isEmpty()) {
+            Pair curr = pq.remove();
+            if (!vis[curr.src]) {
+                vis[curr.src] = true;
+                for (int i = 0; i < graphs[curr.src].size(); i++) {
+
+                    Info4 e = graphs[curr.src].get(i);
+                    int u = e.src;
+                    int v = e.dest;
+                    int w = e.weight;
+                    if (path[u] + w < path[v]) {
+                        path[v] = path[u] + w;
+                        pq.add(new Pair(v, path[v]));
+                    }
+
+                }
+            }
+
+        }
+
+    }
+    // Bell-Man-Ford Algo;
+
+    public void bellManFord(int graph[][], int s, int n) {
+        int path[] = new int[n + 1];
+        for (int i = 0; i < n + 1; i++) {
+            if (i != s) {
+                path[i] = Integer.MAX_VALUE;
+            }
+        }
+
+        @SuppressWarnings("unchecked")
+        ArrayList<Info4>[] graphs = new ArrayList[n + 1];
+
+        for (int i = 0; i < n; i++) {
+            graphs[i] = new ArrayList<>();
+        }
+
+        for (int i = 0; i < n; i++) {
+            int src = graph[i][0];
+            int dest = graph[i][1];
+            int weight = graph[i][2];
+
+            graphs[s].add(new Info4(src, dest, weight));
+        }
+
+        for (int v = 0; v < n - 1; v++) {
+
+            for (int i = 0; i <= n; i++) {
+                for (int j = 0; j < graphs[i].size(); j++) {
+
+                    Info4 e = graphs[i].get(j);
+                    int u = e.src;
+                    int dest = e.dest;
+                    int we = e.weight;
+                    if (path[u] + we < path[dest]) {
+                        path[dest] = path[u] + we;
+                    }
+
+                }
+            }
         }
 
     }
