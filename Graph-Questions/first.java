@@ -1,8 +1,11 @@
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Stack;
 
 public class first {
+
     static class Info {
         int row, col, val;
 
@@ -159,9 +162,74 @@ public class first {
 
     }
 
+    static class Info3 {
+        int src;
+        int dest;
+
+        public Info3(int src, int dest) {
+            this.dest = dest;
+            this.src = src;
+        }
+    }
+
+    // topological sort
+    public static void dfs2(ArrayList<Info3> graph[], boolean vivsted[], Stack<Integer> s, int src) {
+        if (src > graph.length || vivsted[src]) {
+            return;
+        }
+
+        vivsted[src] = true;
+
+        for (int i = 0; i < graph[src].size(); i++) {
+            Info3 e = graph[src].get(i);
+            if (!vivsted[e.dest]) {
+                dfs2(graph, vivsted, s, e.dest);
+
+            }
+
+        }
+        s.push(src);
+
+    }
+
+    /// graph[i][0] // src , graph[i][1] desti
+    public static void Topologicalsort(int graph[][]) {
+        int n = graph.length;
+
+        @SuppressWarnings("unchecked")
+        ArrayList<Info3>[] graphs = new ArrayList[n];
+
+        for (int i = 0; i < n; i++) {
+            graphs[i] = new ArrayList<>();
+        }
+
+        for (int i = 0; i < n; i++) {
+            int src = graph[i][0];
+            int dest = graph[i][1];
+
+            graphs[src].add(new Info3(src, dest));
+        }
+
+        Stack<Integer> s = new Stack<>();
+        boolean visited[] = new boolean[graph.length];
+
+        for (int i = 0; i < graph.length; i++) {
+            int src = graph[i][0];
+            if (!visited[src]) {
+                dfs2(graphs, visited, s, src);
+
+            }
+        }
+
+        while (!s.empty()) {
+            System.out.print(s.pop() + " ");
+
+        }
+        System.out.println();
+
+    }
+
     public static void main(String[] args) {
-        System.out.println(-401 % 10);
-        System.out.println(-401 / 10);
 
     }
 
