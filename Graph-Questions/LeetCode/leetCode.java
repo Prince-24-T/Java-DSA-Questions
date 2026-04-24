@@ -1,3 +1,5 @@
+import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.PriorityQueue;
 
 public class leetCode {
@@ -54,6 +56,71 @@ public class leetCode {
             }
         }
         return min;
+    }
+
+    // 1514. Path with Maximum Probability
+
+    class Solution {
+        class Edges {
+            int src;
+            int dest;
+            double prob;
+
+            public Edges(int src, int dest, double prob) {
+                this.src = src;
+                this.dest = dest;
+                this.prob = prob;
+            }
+        }
+
+        class Info implements Comparable<Info> {
+            int src;
+            double prob;
+
+            public Info(int src, double prob) {
+                this.prob = prob;
+                this.src = src;
+            }
+
+            @Override
+            public int compareTo(Info e2) {
+                return Double.compare(e2.prob, this.prob);
+            }
+        }
+
+        public double maxProbability(int n, int[][] edges, double[] succProb, int start_node, int end_node) {
+            double ans = 1;
+            ArrayList<Edges> graph[] = new ArrayList[n];
+            for (int i = 0; i < n; i++) {
+                graph[i] = new ArrayList<>();
+            }
+            for (int i = 0; i < edges.length; i++) {
+                int src = edges[i][0];
+                int dest = edges[i][1];
+                double prob = succProb[i];
+                graph[src].add(new Edges(src, dest, prob));
+                graph[dest].add(new Edges(dest, src, prob));
+            }
+            PriorityQueue<Info> pq = new PriorityQueue<>();
+            boolean visited[] = new boolean[n];
+            pq.add(new Info(start_node, 1.0));
+            while (!pq.isEmpty()) {
+                Info curr = pq.remove();
+                visited[curr.src] = true;
+                if (curr.src == end_node) {
+                    return curr.prob;
+                }
+                for (int i = 0; i < graph[curr.src].size(); i++) {
+                    Edges e = graph[curr.src].get(i);
+                    if (!visited[e.dest]) {
+                        int newVal = e.dest;
+                        double newProb = curr.prob * e.prob;
+                        pq.add(new Info(newVal, newProb));
+                    }
+                }
+            }
+            return 0;
+        }
     }
 
 }
