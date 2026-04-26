@@ -396,6 +396,39 @@ public class first {
 
     }
 
+    static int par[] = new int[10];
+    static int rank[] = new int[10];
+
+    public int find(int x) {
+        if (par[x] != x) {
+            par[x] = find(par[x]);
+        }
+        return par[x];
+    }
+
+    public void union(int x, int y) {
+        int parX = find(x);
+        int parY = find(y);
+        if (parX == parY) {
+            return;
+        } else {
+            if (rank[parX] > rank[parY]) {
+                par[parY] = parX;
+
+            } else if (rank[parX] < rank[parY]) {
+                par[parX] = parY;
+
+            } else {
+                par[parY] = parX;
+                rank[parX]++;
+            }
+        }
+    }
+
+    public void DisJointAlgo(int graph[][]) {
+
+    }
+
     public static void main(String[] args) {
 
     }
