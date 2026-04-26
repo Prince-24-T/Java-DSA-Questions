@@ -1,5 +1,8 @@
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 import java.util.PriorityQueue;
 
 public class leetCode {
@@ -123,4 +126,63 @@ public class leetCode {
         }
     }
 
+    // 721. Accounts Merge classic question
+
+    public String find(String str, HashMap<String, String> par) {
+        if (!str.equals(par.get(str))) {
+            par.put(str, find(par.get(str), par));
+        }
+        return par.get(str);
+    }
+
+    public void union(String x, String y, HashMap<String, String> par) {
+        String parX = find(x, par);
+        String parY = find(y, par);
+        if (parX.equals(parY)) {
+            return;
+        } else {
+            par.put(parY, parX);
+        }
+    }
+
+    public List<List<String>> accountsMerge(List<List<String>> accounts) {
+
+        HashMap<String, String> parent = new HashMap<>();
+        HashMap<String, String> emailToName = new HashMap<>();
+
+        for (List<String> acc : accounts) {
+            String name = acc.get(0);
+            for (int i = 1; i < acc.size(); i++) {
+                String email = acc.get(i);
+                parent.put(email, email);
+                emailToName.put(email, name);
+            }
+        }
+
+        for (List<String> acc : accounts) {
+            String x = acc.get(1);
+            for (int i = 2; i < acc.size(); i++) {
+                String y = acc.get(i);
+                union(x, y, parent);
+            }
+        }
+        HashMap<String, List<String>> map = new HashMap<>();
+        for (String key : parent.keySet()) {
+            String root = find(key, parent);
+            map.computeIfAbsent(root, k -> new ArrayList<>()).add(key);
+        }
+
+        List<List<String>> res = new ArrayList<>();
+
+        for (String root : map.keySet()) {
+            List<String> emails = map.get(root);
+            Collections.sort(emails);
+            List<String> temp = new ArrayList<>();
+            temp.add(emailToName.get(root));
+            temp.addAll(emails);
+            res.add(temp);
+
+        }
+        return res;
+    }
 }
