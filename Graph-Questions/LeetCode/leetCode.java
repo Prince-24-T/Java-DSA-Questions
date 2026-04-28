@@ -185,4 +185,126 @@ public class leetCode {
         }
         return res;
     }
+
+    /// 1489 question number
+    /// class Solution {
+
+    public int find(int x, int par[]) {
+        if (par[x] != x) {
+            par[x] = find(par[x], par);
+        }
+        return par[x];
+
+    }
+
+    public void union(int x, int y, int par[], int rank[]) {
+        int parA = find(x, par);
+        int parB = find(y, par);
+        if (parA != parB) {
+            if (rank[parA] > rank[parB]) {
+                par[parB] = parA;
+            } else if (rank[parA] < rank[parB]) {
+                par[parA] = parB;
+
+            } else {
+                par[parB] = parA;
+                rank[parA]++;
+            }
+        }
+    }
+
+    class Edges implements Comparable<Edges> {
+        int src, dest, weight, idx;
+
+        public Edges(int src, int dest, int weight, int idx) {
+            this.src = src;
+            this.dest = dest;
+            this.weight = weight;
+            this.idx = idx;
+        }
+
+        public int compareTo(Edges e) {
+            return this.weight - e.weight;
+        }
+    }
+
+    public int kruskalAlgo(int n, ArrayList<Edges> graph, int skipEdge, int forceEdge) {
+
+        int par[] = new int[n];
+        int rank[] = new int[n];
+
+        for (int i = 0; i < n; i++) {
+            par[i] = i;
+        }
+        int mstCost = 0;
+        int edgesCount = 0;
+
+        if (forceEdge != -1) {
+            Edges e = graph.get(forceEdge);
+            int parA = find(e.src, par);
+            int parB = find(e.dest, par);
+            if (parA != parB) {
+                union(e.src, e.dest, par, rank);
+                mstCost += e.weight;
+                edgesCount++;
+            }
+        }
+
+        for (int i = 0; i < graph.size(); i++) {
+            if (skipEdge == i) {
+                continue;
+            }
+            Edges e = graph.get(i);
+            int parA = find(e.src, par);
+            int parB = find(e.dest, par);
+            if (parA != parB) {
+                union(e.src, e.dest, par, rank);
+                edgesCount++;
+                mstCost += e.weight;
+            }
+        }
+        if (edgesCount != n - 1) {
+            return Integer.MAX_VALUE;
+        }
+        return mstCost;
+
+    }
+
+    public List<List<Integer>> findCriticalAndPseudoCriticalEdges(int n, int[][] edges) {
+
+        ArrayList<Edges> graph = new ArrayList<>();
+        for (int i = 0; i < edges.length; i++) {
+            int src = edges[i][0];
+            int dest = edges[i][1];
+            int weight = edges[i][2];
+            graph.add(new Edges(src, dest, weight, i));
+
+        }
+        Collections.sort(graph);
+        List<Integer> crit = new ArrayList<>();
+        List<Integer> pseudo = new ArrayList<>();
+
+        int originalMst = kruskalAlgo(n, graph, -1, -1);
+
+        for (int i = 0; i < graph.size(); i++) {
+
+            int skipWeight = kruskalAlgo(n, graph, i, -1);
+            if (skipWeight > originalMst) {
+                crit.add(graph.get(i).idx);
+            } else {
+                int forceEdge = kruskalAlgo(n, graph, -1, i);
+                if (forceEdge == originalMst) {
+                    pseudo.add(graph.get(i).idx);
+
+                }
+            }
+
+        }
+        List<List<Integer>> result = new ArrayList<>();
+        result.add(crit);
+        result.add(pseudo);
+
+        return result;
+
+    }
 }

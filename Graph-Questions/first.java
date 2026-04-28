@@ -425,8 +425,69 @@ public class first {
         }
     }
 
-    public void DisJointAlgo(int graph[][]) {
+    /// question number 2492
+    /// class Solution {
+    class Edges {
+        int dest;
+        int dist;
 
+        public Edges(int dest, int dist) {
+            this.dest = dest;
+            this.dist = dist;
+        }
+    }
+
+    class Info2 implements Comparable<Info> {
+        int src;
+        int dist;
+
+        public Info2(int src, int dist) {
+            this.src = src;
+            this.dist = dist;
+        }
+
+        public int compareTo(Info2 e) {
+            return this.dist - e.dist;
+        }
+    }
+
+    public int minScore(int n, int[][] roads) {
+        PriorityQueue<Info2> pq = new PriorityQueue<>();
+
+        ArrayList<Edges> graph[] = new ArrayList[n + 1];
+        for (int i = 1; i <= n; i++) {
+            graph[i] = new ArrayList<>();
+        }
+
+        for (int i = 0; i < roads.length; i++) {
+            int src = roads[i][0];
+            int dest = roads[i][1];
+            int dist = roads[i][2];
+            graph[src].add(new Edges(dest, dist));
+            graph[dest].add(new Edges(src, dist));
+
+        }
+        int dist = Integer.MAX_VALUE;
+        boolean visited[] = new boolean[n + 1];
+
+        pq.add(new Info2(1, Integer.MAX_VALUE));
+        while (!pq.isEmpty()) {
+            Info2 e = pq.remove();
+            if (visited[e.src]) {
+                continue;
+            }
+            visited[e.src] = true;
+            dist = Math.min(dist, e.dist);
+
+            for (int i = 0; i < graph[e.src].size(); i++) {
+                Edges curr = graph[e.src].get(i);
+                int dest = curr.dest;
+                if (!visited[dest]) {
+                    pq.add(new Info2(dest, curr.dist));
+                }
+            }
+        }
+        return dist;
     }
 
     public static void main(String[] args) {
